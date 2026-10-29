@@ -95,9 +95,9 @@ internal static class ClaudeStatusLine
         if (!w.TryGetProperty("used_percentage", out var p) || p.ValueKind != JsonValueKind.Number) return;
         DateTimeOffset? reset = w.TryGetProperty("resets_at", out var r) && r.ValueKind == JsonValueKind.Number
             ? DateTimeOffset.FromUnixTimeSeconds(r.GetInt64()) : null;
-        // Janela já reiniciou desde a última leitura: o uso voltou a zero
+        // Janela já reiniciou desde a última leitura: o valor atual é desconhecido (não necessariamente zero)
         bool expired = reset is { } t && t < DateTimeOffset.UtcNow;
-        into.Add(new UsageWindow(name, expired ? 0 : p.GetDouble(), expired ? null : reset));
+        into.Add(new UsageWindow(name, expired ? 0 : p.GetDouble(), reset, expired));
     }
 
     // ---------- Conectar / desconectar nas configurações do Claude Code ----------

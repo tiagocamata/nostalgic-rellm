@@ -184,17 +184,17 @@ internal sealed class AiPopup : LayeredWindow
                 float y = content.Y + i * _blockH;
                 var line = new RectangleF(content.X, y, content.Width, 16 * _u);
                 Painter.Text(g, w.Name, _textFont, C(p.Text), line, Painter.Left, _skin);
-                Painter.Text(g, $"{w.Percent:0}%", _textFont, C(_skin.Text.Value), line, Painter.Right, _skin);
-                Painter.Bar(g, new RectangleF(content.X, y + 18 * _u, content.Width, 4 * _u), (float)w.Percent, _skin);
-                Painter.Text(g, AiUsage.DescribeReset(w.ResetsAt), _smallFont, C(_skin.Text.Detail),
+                // Janela que zerou depois da leitura: o valor real é desconhecido, então não mostra um 0% enganoso
+                Painter.Text(g, w.Expired ? "—" : $"{w.Percent:0}%", _textFont, C(_skin.Text.Value), line, Painter.Right, _skin);
+                Painter.Bar(g, new RectangleF(content.X, y + 18 * _u, content.Width, 4 * _u), w.Expired ? 0 : (float)w.Percent, _skin);
+                Painter.Text(g, w.Expired ? L.T("reset.passed") : AiUsage.DescribeReset(w.ResetsAt), _smallFont, C(_skin.Text.Detail),
                     new RectangleF(content.X, y + 23 * _u, content.Width, 11 * _u), Painter.Right, _skin);
             }
         }
 
-        // GPT vem de um endereço não oficial da OpenAI; o Claude, da linha de status oficial do Claude Code
         string footer = _loading ? L.T("ai.updating")
             : _result?.ReadAt is { } readAt ? DescribeReadAt(readAt)
-            : _result != null ? L.F("ai.updated", _fetchedAt) + " · " + L.T("ai.unofficial") : "";
+            : _result != null ? L.F("ai.updated", _fetchedAt) : "";
         Painter.Text(g, footer, _smallFont, C(_skin.Text.Detail),
             new RectangleF(_pad, _h - 18 * _u, _w - 2 * _pad, 14 * _u), Painter.Right, _skin);
     }

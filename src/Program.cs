@@ -81,6 +81,15 @@ internal static class Program
                 sb.AppendLine($"  {e.Name} x{e.Pids.Length}  {e.Text}");
         }
 
+        foreach (var provider in Enum.GetValues<AiProvider>())
+        {
+            var ai = AiUsage.GetAsync(provider).GetAwaiter().GetResult();
+            sb.AppendLine($"--- IA {provider} (plano {ai.Plan ?? "-"}){(ai.ReadAt is { } at ? $" lido {at.ToLocalTime():g}" : "")}");
+            if (ai.Error != null) sb.AppendLine("  " + ai.Error);
+            foreach (var w in ai.Windows)
+                sb.AppendLine($"  {w.Name}: {(w.Expired ? "—" : $"{w.Percent:0}%")}  {(w.Expired ? L.T("reset.passed") : AiUsage.DescribeReset(w.ResetsAt))}");
+        }
+
         sb.AppendLine("--- Sensores");
         foreach (var line in hw.DescribeSensors()) sb.AppendLine(line);
 

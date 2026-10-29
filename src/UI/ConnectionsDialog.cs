@@ -11,6 +11,7 @@ internal sealed class ConnectionsDialog : Form
     private const int Width96 = 440;
 
     private readonly Label _gptStatus = Wrapped();
+    private readonly Label _claudeApi = Wrapped();
     private readonly Label _claudeStatus = Wrapped();
     private readonly Label _claudeLast = Wrapped();
     private readonly Button _connect = new() { AutoSize = true };
@@ -38,6 +39,9 @@ internal sealed class ConnectionsDialog : Form
         var claudeHeading = Heading(L.T("conn.claude"));
         claudeHeading.Margin = new Padding(0, 16, 0, 4);
         stack.Controls.Add(claudeHeading);
+        stack.Controls.Add(_claudeApi);
+        var statusLineHeading = new Label { Text = L.T("conn.statusLine"), AutoSize = true, Margin = new Padding(0, 10, 0, 2), ForeColor = SystemColors.GrayText };
+        stack.Controls.Add(statusLineHeading);
         stack.Controls.Add(_claudeStatus);
         stack.Controls.Add(_claudeLast);
         var note = Wrapped();
@@ -80,7 +84,11 @@ internal sealed class ConnectionsDialog : Form
 
     private void RefreshState()
     {
-        _gptStatus.Text = File.Exists(AiUsage.CodexAuthFile) ? L.T("conn.gptOk") : L.T("conn.gptMissing");
+        _gptStatus.Text = CodexCli.Find() != null ? L.T("conn.gptOk") : L.T("conn.gptMissing");
+
+        _claudeApi.Text = ClaudeApi.SignedInPlan() is { } plan
+            ? L.F("conn.claudeSignedIn", plan.Length > 0 ? plan : "?")
+            : L.T("conn.claudeSignedOut");
 
         var state = ClaudeStatusLine.GetState();
         _claudeStatus.Text = state.Kind switch

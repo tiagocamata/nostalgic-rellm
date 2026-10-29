@@ -68,19 +68,26 @@ Position and preferences live in `settings.json` next to the exe. `"Height": 0` 
 
 Nobody types a password or token anywhere. Right-click → **Connections…** shows the state of each one.
 
-- **Claude** comes from Claude Code's official [status line](https://code.claude.com/docs/en/statusline).
-  **Connect** adds this to `~/.claude/settings.json` (asking first, and warning if you already have a status line):
+- **Claude** is read from Anthropic with the sign-in Claude Code keeps in `~/.claude/.credentials.json`
+  (install Claude Code and sign in once by running `claude` in a terminal; after that you never need the
+  terminal). The token is only read and only sent to `api.anthropic.com`, while the AI popup is open. When it
+  has expired, or a query doesn't return the numbers, the monitor runs `claude auth status`, which makes
+  Claude Code renew its own sign-in (it doesn't use any of your plan), and tries once more.
+
+  As an optional backup, Claude Code's official [status line](https://code.claude.com/docs/en/statusline)
+  can also record usage whenever you use Claude Code in a terminal. **Connect** adds this to
+  `~/.claude/settings.json` (asking first, and warning if you already have a status line):
 
   ```json
   "statusLine": { "type": "command", "command": "\"C:/path/NostalgicRellm.exe\" --statusline" }
   ```
 
-  On every refresh Claude Code hands over the session and weekly usage (Pro and Max plans); the monitor keeps
-  the last reading in `%LOCALAPPDATA%\NostalgicRellm\claude-usage.json`. The numbers cover your whole plan
-  (app, web and terminal), but only refresh while Claude Code runs in a terminal. No Claude credential is read.
-- **GPT** uses the sign-in the Codex app already saved in `~/.codex/auth.json`, and shows Codex limits (not
-  ChatGPT chat). The endpoint is undocumented and may change. The token is only read, never refreshed by
-  the monitor, sent only to OpenAI, and only while the AI popup is open.
+  The last reading is kept in `%LOCALAPPDATA%\NostalgicRellm\claude-usage.json` and used only if Anthropic
+  can't be reached. Either way the numbers cover your whole plan (app, web and terminal).
+- **GPT** is read by asking Codex itself: the monitor starts the `codex.exe` that ships with the Codex app
+  (or the `codex` CLI on your PATH) in `app-server` mode and calls `account/rateLimits/read`, the same call
+  the Codex app uses. It shows Codex limits (not ChatGPT chat), only while the AI popup is open, and never
+  touches the Codex sign-in token.
 
 ## Skins
 
