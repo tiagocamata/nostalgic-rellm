@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-label="Nostalgic Rellm">
+  <title>Nostalgic Rellm</title>
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22344b"/>
+      <stop offset="1" stop-color="#070b12"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="graphFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6cd4ff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#6cd4ff" stop-opacity="0.05"/>
+    </linearGradient>
+    <radialGradient id="ledGlow">
+      <stop offset="0" stop-color="#56ff8a" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#56ff8a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ledOn" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#d8ffe4"/>
+      <stop offset="0.35" stop-color="#56ff8a"/>
+      <stop offset="1" stop-color="#16803a"/>
+    </radialGradient>
+    <radialGradient id="ledOff" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#4a6a52"/>
+      <stop offset="1" stop-color="#18261c"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Painel de vidro, como a skin E17 Glass -->
+  <rect x="6" y="6" width="708" height="168" rx="14" fill="url(#glass)" stroke="#6f98c8" stroke-opacity="0.7" stroke-width="1.5"/>
+  <rect x="8" y="8" width="704" height="78" rx="12" fill="url(#gloss)"/>
+
+  <!-- Coluna dos LEDs, estilo GKrellM -->
+  <rect x="26" y="30" width="36" height="56" rx="5" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+  <rect x="26" y="94" width="36" height="56" rx="5" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.35"/>
+  <circle cx="44" cy="58" r="22" fill="url(#ledGlow)"/>
+  <circle cx="44" cy="58" r="10" fill="url(#ledOn)" stroke="#000" stroke-opacity="0.6"/>
+  <circle cx="44" cy="122" r="10" fill="url(#ledOff)" stroke="#000" stroke-opacity="0.6"/>
+
+  <!-- Célula com gráfico de histórico -->
+  <rect x="80" y="30" width="180" height="120" rx="8" fill="#000000" fill-opacity="0.3" stroke="#b0d8ff" stroke-opacity="0.18"/>
+  <path d="M84 146 L84 140 L96 136 L108 141 L120 126 L132 130 L144 116 L156 122 L168 106 L180 118 L192 112 L204 124 L216 102 L228 109 L240 98 L256 104 L256 146 Z" fill="url(#graphFill)"/>
+  <path d="M84 140 L96 136 L108 141 L120 126 L132 130 L144 116 L156 122 L168 106 L180 118 L192 112 L204 124 L216 102 L228 109 L240 98 L256 104" fill="none" stroke="#6cd4ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="94" y="56" font-family="Segoe UI, Verdana, DejaVu Sans, sans-serif" font-size="16" font-weight="700" fill="#9cc4e4">CPU</text>
+  <text x="94" y="86" font-family="Segoe UI, Verdana, DejaVu Sans, sans-serif" font-size="26" font-weight="700" fill="#ffffff">42%</text>
+
+  <!-- Nome -->
+  <text x="290" y="92" font-family="Segoe UI, Verdana, DejaVu Sans, sans-serif" font-size="46" font-weight="700" fill="#ffffff">Nostalgic</text>
+  <text x="510" y="92" font-family="Segoe UI, Verdana, DejaVu Sans, sans-serif" font-size="46" font-weight="300" fill="#8cd6ff">Rellm</text>
+  <text x="292" y="128" font-family="Segoe UI, Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#86a6c4" font-style="italic">your PC's vital signs, dressed like it's 2003</text>
+</svg>

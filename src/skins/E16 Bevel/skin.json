@@ -1,0 +1,12 @@
+// Metálico com relevo, no espírito dos temas do Enlightenment E16
+{
+  "name": "E16 Bevel",
+  "font": "Tahoma",
+  "panel": { "top": "#E0565C66", "bottom": "#E02A2E35", "border": "#00000000", "gloss": "#1AFFFFFF", "radius": 0, "bevel": true },
+  "cell":  { "fill": "#40000000", "border": "#00000000", "hover": "#24FFD27A", "radius": 0, "bevel": true },
+  "text":  { "label": "#FFFFD27A", "value": "#FFF4F4F4", "detail": "#FFC8C0B0", "hot": "#FFFF5A3C", "shadow": "#CC000000", "bold": true },
+  "bar":   { "low": "#FFE8A23C", "high": "#FFE83C3C", "track": "#60000000", "gloss": true },
+  "graph": { "line": "#FFFFC24A", "fill": "#60FFC24A", "grid": "#18FFFFFF" },
+  "led":   { "on": "#FFFFB020", "off": "#FF4A3A20", "button": "#50FFFFFF" },
+  "popup": { "background": "#E8383C44", "border": "#00000000", "title": "#FFFFD27A", "text": "#FFF0F0F0", "hover": "#30FFD27A", "kill": "#FFFF5A3C" }
+}

@@ -1,0 +1,12 @@
+// Plano e discreto, para quem quer só os números
+{
+  "name": "Minimal",
+  "font": "Segoe UI",
+  "panel": { "top": "#A0101010", "bottom": "#A0101010", "border": "#00000000", "gloss": "#00000000", "radius": 4 },
+  "cell":  { "fill": "#00000000", "border": "#00000000", "hover": "#18FFFFFF", "radius": 3 },
+  "text":  { "label": "#FF9A9A9A", "value": "#FFF2F2F2", "detail": "#FF8A8A8A", "hot": "#FFFF6A55", "shadow": "#00000000", "bold": false },
+  "bar":   { "low": "#FFD8D8D8", "high": "#FFFF6A55", "track": "#30FFFFFF", "gloss": false },
+  "graph": { "line": "#B0FFFFFF", "fill": "#28FFFFFF", "grid": "#00000000" },
+  "led":   { "on": "#FFEDEDED", "off": "#FF3A3A3A", "button": "#20FFFFFF" },
+  "popup": { "background": "#E0141414", "border": "#30FFFFFF", "title": "#FFF2F2F2", "text": "#FFE6E6E6", "hover": "#20FFFFFF", "kill": "#FFFF6A55" }
+}

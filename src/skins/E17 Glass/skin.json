@@ -1,0 +1,12 @@
+// Vidro translúcido azulado inspirado no Enlightenment E17
+{
+  "name": "E17 Glass",
+  "font": "Segoe UI",
+  "panel": { "top": "#B81C2A3C", "bottom": "#C8070B12", "border": "#7096C8FF", "gloss": "#2EFFFFFF", "radius": 7 },
+  "cell":  { "fill": "#30000000", "border": "#22B0D8FF", "hover": "#2A8FD0FF", "radius": 4 },
+  "text":  { "label": "#FF9CC4E4", "value": "#FFFFFFFF", "detail": "#FF86A6C4", "hot": "#FFFF6A4D", "shadow": "#AA000000", "bold": true },
+  "bar":   { "low": "#FF3FB4FF", "high": "#FFFF4D5E", "track": "#50000000", "gloss": true },
+  "graph": { "line": "#FF6CD4FF", "fill": "#706CD4FF", "grid": "#16FFFFFF" },
+  "led":   { "on": "#FF56FF8A", "off": "#FF243A2C", "button": "#38FFFFFF" },
+  "popup": { "background": "#C8101A26", "border": "#7096C8FF", "title": "#FF8CD6FF", "text": "#FFE4F0FF", "hover": "#305FC8FF", "kill": "#FFFF5A5A" }
+}

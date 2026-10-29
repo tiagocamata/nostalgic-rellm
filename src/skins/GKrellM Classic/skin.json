@@ -1,0 +1,12 @@
+// Painel escuro com gráficos verdes, como o GKrellM padrão
+{
+  "name": "GKrellM Classic",
+  "font": "Verdana",
+  "panel": { "top": "#F0242824", "bottom": "#F0141614", "border": "#FF3A443A", "gloss": "#00000000", "radius": 2 },
+  "cell":  { "fill": "#FF050805", "border": "#FF2E3A2E", "hover": "#1A7CFF7C", "radius": 1, "bevel": true },
+  "text":  { "label": "#FFB8D8B8", "value": "#FFE8FFE8", "detail": "#FF8CB08C", "hot": "#FFFF6040", "shadow": "#FF000000", "bold": false },
+  "bar":   { "low": "#FF3CC83C", "high": "#FFE84030", "track": "#FF101810", "gloss": false },
+  "graph": { "line": "#FF5CF05C", "fill": "#803CA03C", "grid": "#1E7CFF7C" },
+  "led":   { "on": "#FF4CFF4C", "off": "#FF1C381C", "button": "#30FFFFFF" },
+  "popup": { "background": "#F0141614", "border": "#FF3A443A", "title": "#FF7CFF7C", "text": "#FFE0F0E0", "hover": "#283CC83C", "kill": "#FFFF5040" }
+}
