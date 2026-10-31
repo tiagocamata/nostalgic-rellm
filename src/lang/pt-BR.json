@@ -49,6 +49,7 @@
   "err.noServer": "Sem resposta do servidor.",
   "err.noData": "Resposta sem dados de uso.",
   "err.claudeLogin": "O Claude Code não está logado neste PC. Instale-o e faça login uma vez rodando claude no terminal.",
+  "err.claudeRejected": "O Claude Code está logado, mas a Anthropic recusou o login mesmo depois de renová-lo. Se continuar, entre de novo com claude auth login.",
   "err.claudeBusy": "A Anthropic pediu uma pausa entre consultas. Tente de novo em alguns minutos.",
   "err.claudeFailed": "A Anthropic não devolveu o uso ({0}).",
   "err.codexMissing": "Codex não encontrado. Instale o app do Codex (ou a CLI codex) e faça login.",

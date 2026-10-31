@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace NostalgicRellm.Sensors;
 
@@ -29,23 +30,30 @@ internal static class ClaudeApi
         if (login.ExpiresAt is { } exp && exp < DateTimeOffset.UtcNow.AddMinutes(5))
             login = await RefreshAsync() ?? login;
 
-        var (status, windows) = await QueryAsync(login.Token);
+        var (status, windows, detail) = await QueryAsync(login.Token);
         // Qualquer resposta sem os números (recusa, falha, corpo inesperado): o Claude Code renova o login
         // e tenta-se mais uma vez. Só não insiste no 429, que é pedido explícito de pausa.
-        bool retried = false;
-        if (windows == null && status != 429 && await RefreshAsync() is { } fresh)
+        // Na recusa (401/403) o token pode ainda parecer válido pelo arquivo, e aí o "auth status" não renova:
+        // por isso a renovação é forçada.
+        string refresh = "";
+        if (windows == null && status != 429)
         {
-            retried = true;
-            login = fresh;
-            (status, windows) = await QueryAsync(login.Token);
+            string oldToken = login.Token;
+            var fresh = await RefreshAsync(force: status is 401 or 403);
+            refresh = fresh == null ? " | renovação falhou" : fresh.Token != oldToken ? " | login renovado" : " | login inalterado";
+            if (fresh != null)
+            {
+                login = fresh;
+                (status, windows, detail) = await QueryAsync(login.Token);
+            }
         }
 
         if (windows == null)
         {
-            Log($"usage falhou: status {status}{(retried ? " (após renovar o login)" : "")}");
+            Log($"usage falhou: status {status}{refresh}{(detail is { Length: > 0 } ? " | " + detail : "")}");
             return new AiUsageResult(AiProvider.Claude, login.Plan, [], status switch
             {
-                401 or 403 => L.T("err.claudeLogin"),
+                401 or 403 => L.T("err.claudeRejected"),
                 429 => L.T("err.claudeBusy"),
                 0 => L.T("err.noServer"),
                 200 => L.T("err.noData"),
@@ -56,10 +64,12 @@ internal static class ClaudeApi
     }
 
     /// <summary>Consulta o uso; devolve as janelas só se a resposta veio completa (200 com pelo menos uma janela).</summary>
-    private static async Task<(int status, List<UsageWindow>? windows)> QueryAsync(string token)
+    /// <remarks>Na falha, detail traz o começo da resposta (mensagem de erro da Anthropic, sem dados de login).</remarks>
+    private static async Task<(int status, List<UsageWindow>? windows, string? detail)> QueryAsync(string token)
     {
         var (status, body) = await GetUsageAsync(token);
-        if (status != 200 || body == null) return (status, null);
+        string? detail = body is { Length: > 0 } ? body.ReplaceLineEndings(" ")[..Math.Min(body.Length, 200)] : null;
+        if (status != 200 || body == null) return (status, null, detail);
         try
         {
             using var doc = JsonDocument.Parse(body);
@@ -68,9 +78,9 @@ internal static class ClaudeApi
             AddWindow(doc.RootElement, "seven_day", AiUsage.WindowName(7 * 86400), windows);
             AddWindow(doc.RootElement, "seven_day_opus", L.T("usage.weeklyOpus"), windows);
             AddWindow(doc.RootElement, "seven_day_sonnet", L.T("usage.weeklySonnet"), windows);
-            return (status, windows.Count > 0 ? windows : null);
+            return (status, windows.Count > 0 ? windows : null, detail);
         }
-        catch (JsonException) { return (status, null); }
+        catch (JsonException) { return (status, null, detail); }
     }
 
     private static Login? ReadLogin()
@@ -103,10 +113,15 @@ internal static class ClaudeApi
         catch (Exception) { return (0, null); }
     }
 
-    /// <summary>Pede ao Claude Code para renovar o próprio login e relê o arquivo.</summary>
-    private static async Task<Login?> RefreshAsync()
+    /// <summary>
+    /// Pede ao Claude Code para renovar o próprio login e relê o arquivo. O "auth status" só renova token vencido;
+    /// com force, a validade no arquivo é zerada antes (o token em si não é lido nem alterado), e devolvida se o
+    /// Claude Code não conseguir renovar.
+    /// </summary>
+    private static async Task<Login?> RefreshAsync(bool force = false)
     {
         if (FindCli() is not { } cli) return null;
+        long? oldExpiry = force ? SetExpiry(0) : null;
         try
         {
             var psi = new ProcessStartInfo(cli, "auth status")
@@ -124,8 +139,31 @@ internal static class ClaudeApi
             try { await proc.WaitForExitAsync(timeout.Token); }
             catch (OperationCanceledException) { try { proc.Kill(true); } catch (Exception) { } }
         }
-        catch (Exception) { return null; }
+        catch (Exception) { }
+        finally
+        {
+            // Se o Claude Code não gravou um token novo, a validade original volta para o lugar
+            if (oldExpiry is { } exp && ReadLogin() is { ExpiresAt: { } now } && now.ToUnixTimeMilliseconds() == 0)
+                SetExpiry(exp);
+        }
         return ReadLogin();
+    }
+
+    /// <summary>Troca só o campo expiresAt do login no arquivo do Claude Code; devolve o valor anterior.</summary>
+    private static long? SetExpiry(long value)
+    {
+        try
+        {
+            var root = JsonNode.Parse(File.ReadAllText(CredentialsFile));
+            if (root?["claudeAiOauth"] is not JsonObject o || o["expiresAt"] is not JsonValue v || !v.TryGetValue(out long old))
+                return null;
+            o["expiresAt"] = value;
+            string tmp = CredentialsFile + ".nr-tmp";
+            File.WriteAllText(tmp, root.ToJsonString(), new System.Text.UTF8Encoding(false));
+            File.Move(tmp, CredentialsFile, overwrite: true);
+            return old;
+        }
+        catch (Exception) { return null; }
     }
 
     /// <summary>

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.3 — 2026-10-31
+
+### Fixed
+- **Claude** could stay stuck on "not signed in" for hours: Anthropic sometimes rejects a sign-in that still looks
+  valid on disk, and `claude auth status` only renews sign-ins that have expired. On a rejection the monitor now
+  marks the sign-in as expired (only the expiry date; the token itself is never changed) so Claude Code
+  renews it, then retries. If Claude Code can't renew, the original date is put back.
+- The error now says the sign-in was rejected instead of claiming Claude Code isn't signed in.
+
+### Changed
+- `ai.log` also records whether the sign-in was renewed and Anthropic's error message.
+
 ## 0.3.2 — 2026-10-30
 
 ### Fixed

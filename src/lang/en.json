@@ -49,6 +49,7 @@
   "err.noServer": "No response from the server.",
   "err.noData": "The response had no usage data.",
   "err.claudeLogin": "Claude Code isn't signed in on this PC. Install it and sign in once by running claude in a terminal.",
+  "err.claudeRejected": "Claude Code is signed in, but Anthropic rejected the sign-in even after renewing it. If it keeps happening, sign in again with claude auth login.",
   "err.claudeBusy": "Anthropic asked for a pause between queries. Try again in a few minutes.",
   "err.claudeFailed": "Anthropic didn't return the usage ({0}).",
   "err.codexMissing": "Codex not found. Install the Codex app (or the codex CLI) and sign in.",
