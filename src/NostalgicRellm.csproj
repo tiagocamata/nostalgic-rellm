@@ -10,7 +10,7 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>NostalgicRellm</AssemblyName>
     <RootNamespace>NostalgicRellm</RootNamespace>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
 
     <!-- Leveza: GC de estação de trabalho sem thread de fundo extra -->
     <ServerGarbageCollection>false</ServerGarbageCollection>

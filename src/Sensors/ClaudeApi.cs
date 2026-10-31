@@ -32,13 +32,17 @@ internal static class ClaudeApi
         var (status, windows) = await QueryAsync(login.Token);
         // Qualquer resposta sem os números (recusa, falha, corpo inesperado): o Claude Code renova o login
         // e tenta-se mais uma vez. Só não insiste no 429, que é pedido explícito de pausa.
+        bool retried = false;
         if (windows == null && status != 429 && await RefreshAsync() is { } fresh)
         {
+            retried = true;
             login = fresh;
             (status, windows) = await QueryAsync(login.Token);
         }
 
         if (windows == null)
+        {
+            Log($"usage falhou: status {status}{(retried ? " (após renovar o login)" : "")}");
             return new AiUsageResult(AiProvider.Claude, login.Plan, [], status switch
             {
                 401 or 403 => L.T("err.claudeLogin"),
@@ -47,6 +51,7 @@ internal static class ClaudeApi
                 200 => L.T("err.noData"),
                 _ => L.F("err.claudeFailed", status),
             });
+        }
         return new AiUsageResult(AiProvider.Claude, login.Plan, windows, null);
     }
 
@@ -121,6 +126,23 @@ internal static class ClaudeApi
         }
         catch (Exception) { return null; }
         return ReadLogin();
+    }
+
+    /// <summary>
+    /// Registra falhas em %LOCALAPPDATA%\NostalgicRellm\ai.log (só hora e código HTTP, nunca o token),
+    /// para dar para saber depois por que uma consulta não voltou.
+    /// </summary>
+    private static void Log(string message)
+    {
+        try
+        {
+            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NostalgicRellm");
+            Directory.CreateDirectory(dir);
+            string file = Path.Combine(dir, "ai.log");
+            if (File.Exists(file) && new FileInfo(file).Length > 64 * 1024) File.Delete(file);
+            File.AppendAllText(file, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {message}{Environment.NewLine}", new System.Text.UTF8Encoding(false));
+        }
+        catch (Exception) { }
     }
 
     /// <summary>claude.exe da instalação nativa, ou o que estiver no PATH.</summary>

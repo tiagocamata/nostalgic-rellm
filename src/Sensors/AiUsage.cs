@@ -21,7 +21,8 @@ internal static class AiUsage
     {
         lock (Cache)
         {
-            if (Cache.TryGetValue(provider, out var c) && DateTime.UtcNow - c.at < CacheFor && c.result.Error == null)
+            // Erros e leituras guardadas (reserva) não ficam em cache: o próximo clique tenta a consulta direta de novo
+            if (Cache.TryGetValue(provider, out var c) && DateTime.UtcNow - c.at < CacheFor && c.result is { Error: null, ReadAt: null })
                 return c.result;
         }
 
@@ -46,7 +47,8 @@ internal static class AiUsage
     {
         var live = await ClaudeApi.ReadAsync();
         if (live is { Error: null }) return live;
-        if (ClaudeStatusLine.Load() is { } reading) return reading;
+        // A leitura guardada só vale se ainda tiver algum número atual; com tudo zerado, o erro diz mais
+        if (ClaudeStatusLine.Load() is { } reading && reading.Windows.Any(w => !w.Expired)) return reading;
         if (live != null) return live;
         return new AiUsageResult(AiProvider.Claude, null, [], L.T("err.claudeLogin"));
     }

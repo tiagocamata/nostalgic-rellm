@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.2 — 2026-10-30
+
+### Fixed
+- **Claude** could show "—" for every window after a failed live query: the monitor quietly fell back to an old
+  status-line reading whose windows had all reset, and cached it for two minutes. That fallback is now used only
+  when it still has current numbers; otherwise the real error is shown, and neither errors nor fallbacks are cached,
+  so clicking again retries right away.
+
+### Added
+- Failed Claude queries are logged to `%LOCALAPPDATA%\NostalgicRellm\ai.log` (time and HTTP status only, never the token).
+- `FEATURES.md`: the wish list for upcoming versions (in Portuguese).
+
 ## 0.3.1 — 2026-10-29
 
 The AI panel actually works now.
